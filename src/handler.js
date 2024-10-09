@@ -66,18 +66,26 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBooksHandler = (request, h) => {
+  const simplifiedBooks = books.map(({ id, name, publisher }) => ({
+    id,
+    name,
+    publisher,
+  }));
+
   return h
     .response({
       status: "success",
       data: {
-        books,
+        books: simplifiedBooks,
       },
     })
     .code(200);
 };
 
+// Handler untuk menampilkan detail buku berdasarkan ID
 const getBookByIdHandler = (request, h) => {
   const { id } = request.params;
+  console.log(`Mencari buku dengan ID: ${id}`);
 
   const book = books.find((b) => b.id === id);
 
@@ -93,11 +101,14 @@ const getBookByIdHandler = (request, h) => {
   return h
     .response({
       status: "success",
-      data: book,
+      data: {
+        book, // Pastikan ada properti 'book' di sini
+      },
     })
     .code(200);
 };
 
+// Handler untuk mengubah data buku
 const updateBookHandler = (request, h) => {
   const { id } = request.params;
   const {
@@ -116,16 +127,16 @@ const updateBookHandler = (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Buku tidak ditemukan",
+        message: "Gagal memperbarui buku. Id tidak ditemukan",
       })
       .code(404);
   }
 
-  if (!name) {
+  if (!name || typeof name !== "string") {
     return h
       .response({
         status: "fail",
-        message: "Gagal memperbarui buku. Mohon isi nama buku",
+        message: "Nama buku harus diisi",
       })
       .code(400);
   }
@@ -134,8 +145,7 @@ const updateBookHandler = (request, h) => {
     return h
       .response({
         status: "fail",
-        message:
-          "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
+        message: "readPage tidak boleh lebih besar dari pageCount",
       })
       .code(400);
   }
@@ -159,7 +169,8 @@ const updateBookHandler = (request, h) => {
   return h
     .response({
       status: "success",
-      data: books[index],
+      message: "Buku berhasil diperbarui", // Tambahkan pesan sukses
+      data: books[index], // Kembalikan data buku yang diperbarui
     })
     .code(200);
 };
@@ -172,7 +183,7 @@ const deleteBookHandler = (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Buku tidak ditemukan",
+        message: "Buku gagal dihapus. Id tidak ditemukan",
       })
       .code(404);
   }
