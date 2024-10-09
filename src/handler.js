@@ -1,8 +1,7 @@
 const { nanoid } = require("nanoid");
 const books = require("./books");
 
-// Mendapatkan waktu saat ini dalam format ISO
-const getCurrentTime = () => new Date().toISOString();
+const getCurrentTime = () => new Date().toISOString(); // // Mendapatkan waktu saat ini dalam format ISO
 
 // Handler untuk menambahkan buku
 const addBookHandler = (request, h) => {
@@ -61,9 +60,11 @@ const getBookByIdHandler = (request, h) => {
   const { id } = request.params;
   const book = books.find((b) => b.id === id);
   if (!book) {
-    return h.response({ message: "Buku tidak ditemukan" }).code(404);
+    return h
+      .response({ message: "Buku tidak ditemukan", status: "fail" })
+      .code(404);
   }
-  return h.response(book).code(200);
+  return h.response({ status: "success", data: book }).code(200);
 };
 
 // Handler untuk mengubah data buku
@@ -82,12 +83,23 @@ const updateBookHandler = (request, h) => {
 
   const index = books.findIndex((b) => b.id === id);
   if (index === -1) {
-    return h.response({ message: "Buku tidak ditemukan" }).code(404);
+    return h
+      .response({ message: "Buku tidak ditemukan", status: "fail" })
+      .code(404);
+  }
+
+  if (!name || typeof name !== "string") {
+    return h
+      .response({ message: "Nama buku harus diisi", status: "fail" })
+      .code(400);
   }
 
   if (readPage > pageCount) {
     return h
-      .response({ message: "readPage tidak boleh lebih besar dari pageCount" })
+      .response({
+        message: "readPage tidak boleh lebih besar dari pageCount",
+        status: "fail",
+      })
       .code(400);
   }
 
@@ -107,20 +119,25 @@ const updateBookHandler = (request, h) => {
     updatedAt,
   };
 
-  return h.response(books[index]).code(200);
+  return h.response({ status: "success", data: books[index] }).code(200);
 };
 
+// Handler untuk menghapus buku
 // Handler untuk menghapus buku
 const deleteBookHandler = (request, h) => {
   const { id } = request.params;
   const index = books.findIndex((b) => b.id === id);
 
   if (index === -1) {
-    return h.response({ message: "Buku tidak ditemukan" }).code(404);
+    return h
+      .response({ message: "Buku tidak ditemukan", status: "fail" })
+      .code(404);
   }
 
   books.splice(index, 1);
-  return h.response({ message: "Buku berhasil dihapus" }).code(204);
+  return h
+    .response({ status: "success", message: "Buku berhasil dihapus" })
+    .code(200);
 };
 
 module.exports = {
