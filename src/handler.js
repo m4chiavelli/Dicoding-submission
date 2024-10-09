@@ -136,7 +136,7 @@ const updateBookHandler = (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Nama buku harus diisi",
+        message: "Gagal memperbarui buku. Mohon isi nama buku",
       })
       .code(400);
   }
@@ -145,7 +145,8 @@ const updateBookHandler = (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "readPage tidak boleh lebih besar dari pageCount",
+        message:
+          "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
       })
       .code(400);
   }
