@@ -3,6 +3,7 @@ const books = require("./books");
 
 const getCurrentTime = () => new Date().toISOString();
 
+// Handler untuk menambahkan buku
 const addBookHandler = (request, h) => {
   const {
     name,
@@ -18,8 +19,8 @@ const addBookHandler = (request, h) => {
   if (!name) {
     return h
       .response({
-        status: "fail",
         message: "Gagal menambahkan buku. Mohon isi nama buku",
+        status: "fail",
       })
       .code(400);
   }
@@ -27,15 +28,15 @@ const addBookHandler = (request, h) => {
   if (readPage > pageCount) {
     return h
       .response({
-        status: "fail",
         message:
           "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount",
+        status: "fail",
       })
       .code(400);
   }
 
-  const id = nanoid(8);
-  const insertedAt = getCurrentTime();
+  const id = nanoid();
+  const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
 
   const newBook = {
@@ -54,12 +55,12 @@ const addBookHandler = (request, h) => {
   };
 
   books.push(newBook);
+  console.log(books); // Log semua buku setelah penambahan
   return h
     .response({
       status: "success",
-      data: {
-        bookId: id,
-      },
+      message: "Buku berhasil ditambahkan",
+      data: { bookId: id },
     })
     .code(201);
 };
