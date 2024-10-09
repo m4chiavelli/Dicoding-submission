@@ -23,7 +23,7 @@ const routes = [
   // Menyimpan route untuk mendapatkan catatan berdasarkan id
   {
     method: "GET",
-    path: "/notes/{id}",
+    path: "/books/{id}",
     handler: getBookByIdHandler,
   },
 
